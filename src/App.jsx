@@ -10,7 +10,7 @@ function App() {
   return (
     <>
       <h1>Family Tree</h1>
-      <FamilyTree />
+      <FamilyTree personId="103" />
     </>
   )
 }
