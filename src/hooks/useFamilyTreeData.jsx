@@ -14,20 +14,30 @@ const generatePersonMarriageFragment = (depth) => {
                 first_name
                 last_name
                 gender
-                
+                birth_date
+                death_date
+                is_owner
+                status
             }
             Woman {
                 id
                 first_name
                 last_name
                 gender
-               
+                birth_date
+                death_date
+                is_owner
+                status
             }
             Children {
                 id
                 first_name
                 last_name
                 gender
+                birth_date
+                death_date
+                is_owner
+                status
                 ${generatePersonMarriageFragment(depth - 1)}
             }
         }
@@ -50,6 +60,10 @@ const useFamilyTreeData = (personId) => {
                             first_name
                             gender
                             mobile
+                            birth_date
+                            death_date
+                            is_owner
+                            status
                             ${generatePersonMarriageFragment(REPEAT_COUNT)}
                         }
                     }

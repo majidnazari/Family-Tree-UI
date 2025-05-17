@@ -14,6 +14,10 @@ const mapFamilyTreeResponse = (personData) => {
                     "id": person.id,
                     "first name": person.first_name,
                     "last name": person.last_name,
+                    "birth_date": person.birth_date,
+                    "death_date": person.death_date,
+                    "is_owner": person.is_owner,
+                    "status": person.status,
                     gender,
 
                 },
