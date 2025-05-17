@@ -15,7 +15,7 @@ const useFamilyTreeData = (personId) => {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiOTllMTk5YWRjMjUyOWU4ZDQ1NzY3ZGViZWQzODk5OGE0MzQ1Mzg3OWExOGQyMTQ2MWFlZmE2YzI5NDY4OTMxODU2YjU2YTgyYWI2NTE5NTUiLCJpYXQiOjE3NDcxMzk0NTQuMzg1MDg4LCJuYmYiOjE3NDcxMzk0NTQuMzg1MDg5LCJleHAiOjE3NDczOTg2NTQuMzcyNTIsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.KzGlgG0bWYKEQr5YZtnwNVaNmd6yyCejTw6aivLYXYv2sptlL6qn0ouqrNe9ETQZWpMwjJ8hdC9LMuZgD6haiXWCmphLyPUYyv5U2pankm3XhKlNgmsIMJcrq74DZtbINwLbBkrJEDBI6rXttr9hG5lsbOZhUo5p3VsCFn3qpguKMhXHVB3ohKRsOFs6t1d2Ey9gYkoyJyACdIeWMeLYgkIDJDE3Y6q5e0Y5K1XIMFWjp4hrcXNWn4tv56hzugSJjZShznThmRUKnxSOd7e3PHmPoy19q-OdD3MHEWpWTkY-YBEmO5Lim0Wief6CDIFpTnQ9P57zRDcVJbOuCMY7Fk9Zp5FuZ0ZG6srnkzCRk5TVRs2L8wYi2aboz1_qGGcCl8MnW_UyKezPr9afdxjaG4EOYJgMNsCac1ALjOxXLN3eUFX8zBc2-opnn04H1BmifJL2KfyGEvDzy7CDMA7cPNBmlLRM1iyDi9wBYcQXeHSMPGE8U-t6mJ-0qn25esXQlsObfui-KGJpAfyMYiNIVfnyL9rnm_6bSIyYQbhVdkdQXI09Msq8eHZTiaamL1mSxIlStJE1rkGhcETkVByac_jGyzfyec8BTZxCJga1W6N5R9PJUI816jr1u2A6ltOJQaIr3R7pSiM3RhBrE6OrA4NBHU-KLnaRS-4CRXQnoEc"
+                        "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNmQwYjNlMThlYWNlNjU3ODhmYjhiYTVhYzZjY2Y0Yzk1NTRiYjgyZmExNGEwZjcxMDI5N2I4MzMyOGIzOGVlOGMxNDQyNGY5YzUwMWQwYjEiLCJpYXQiOjE3NDc0Njg3OTUuMzA5NTE5LCJuYmYiOjE3NDc0Njg3OTUuMzA5NTIsImV4cCI6MTc0NzcyNzk5NS4zMDU2MTYsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.QA1EQplyzAQBQmHi9VGQpDm5VqZxsIetASQDrmZ0SVTWjdBJVpvegzfRiNXeLeKBneJuBsvRY6LLJzkN6rIxjK-IdlTJpC1ebAeOnj-R8MqbL1Jy7wJDmu7BC9aBbQVTDopZXcJInIlVC8HryqesME2hsEwun_bxEcSbbGj-miywiwuF3QtbirFbdZ4b9TxthFAyjWrHuQYhRK62KTPZpa9l1EmriJOzGsdjbSA1en46jCzevaEt7JBwI3jP5hym31X2ZIKJzNGpfG-KH4FnhaAtK6pRFCcrlDPENjkkG9MDt7mvf74ak_wkCL-O-Okbrw3cBv6YlmXAYrokYZy6sA_6jNVlCzkTqZXbTf4oo5teG_5_Wr8IJvRTKMb3Uj_7ruQgYDmOmMSCjRy5JaS6MaE1KxQ09hbAUb7pNJawkZEo4nNE60ksUFNtKqmszrr62yOi85axgDf3wkRGWxMA6bAixpTb5txJPHxzgw7w1d5in1ftlA46riDCcbe9YU4HIcIHbfRRnQHeD7GeeduY4UYjDeOzOSoCE80zVoVLX97oK5Ym5f2bVPqGdyHsLAKcRYS9bH3RAdmKhobuRXR0LKiEeZ_nhPUvxUiZKt1etFujGSkhQErrRZY0chncqNF8gPMSSRk2ipyq_dqkalURvuOm5ATiVbtVeG6BZB4QL_Q"
                     },
                     body: JSON.stringify({
                         query: `
@@ -27,38 +27,45 @@ const useFamilyTreeData = (personId) => {
                       id
                       first_name
                       last_name
+                      gender
                       PersonMarriages {
                         id
                         Man {
                           id
                           first_name
                           last_name
+                          gender
                         }
                         Woman {
                           id
                           first_name
                           last_name
+                          gender
                         }
                         Children {
                           id
                           first_name
                           last_name
+                          gender
                           PersonMarriages {
                             id
                             Man {
                               id
                               first_name
                               last_name
+                              gender
                             }
                             Woman {
                               id
                               first_name
                               last_name
+                              gender
                             }
                             Children {
                               id
                               first_name
                               last_name
+                              gender
                             }
                           }
                         }
@@ -68,59 +75,70 @@ const useFamilyTreeData = (personId) => {
                       id
                       first_name
                       last_name
+                      gender
                     }
                     Children {
                       id
                       first_name
                       last_name
+                      gender
                       PersonMarriages {
                         id
                         Man {
                           id
                           first_name
                           last_name
+                          gender
                         }
                         Woman {
                           id
                           first_name
                           last_name
+                          gender
                         }
                         Children {
                           id
                           first_name
                           last_name
+                          gender
                           PersonMarriages {
                             id
                             Man {
                               id
                               first_name
                               last_name
+                              gender
                             }
                             Woman {
                               id
                               first_name
                               last_name
+                              gender
                             }
                             Children {
                               id
                               first_name
                               last_name
+                              gender
                               PersonMarriages {
                                 id
                                 Man {
                                   id
                                   first_name
                                   last_name
+                                  gender
                                 }
                                 Woman {
                                   id
                                   first_name
                                   last_name
+                                  gender
                                 }
                                 Children {
                                   id
                                   first_name
                                   last_name
+                                  gender
                                 }
                               }
                             }

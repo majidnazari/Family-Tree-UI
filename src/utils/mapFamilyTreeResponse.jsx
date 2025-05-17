@@ -4,13 +4,18 @@ const mapFamilyTreeResponse = (personData) => {
     const addPerson = (person, gender) => {
         if (!person || !person.id) return;
 
+        gender = person.gender === 0 ? "F" : person.gender === 1 ? "M" : defaultGender;
+
         if (!nodes.has(person.id)) {
+
             nodes.set(person.id, {
                 id: person.id,
                 data: {
+                    "id": person.id,
                     "first name": person.first_name,
                     "last name": person.last_name,
                     gender,
+
                 },
                 rels: {},
             });

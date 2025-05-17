@@ -35,7 +35,7 @@ const FamilyTree = ({ personId }) => {
 
     const f3EditTree = f3Chart.editTree()
       .fixed(true)
-      .setFields(["first name", "last name", "gender"])
+      .setFields(["first name", "last name", "gender","id"])
       .setEditFirst(true);
 
     f3EditTree.setEdit();
