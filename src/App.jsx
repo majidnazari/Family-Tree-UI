@@ -10,7 +10,7 @@ function App() {
   return (
     <>
       <h1>Family Tree</h1>
-      <FamilyTree personId="103" />
+      <FamilyTree personId="1" />
 
       {/* Toast container for notifications */}
       <ToastContainer position="top-right" autoClose={5000} />

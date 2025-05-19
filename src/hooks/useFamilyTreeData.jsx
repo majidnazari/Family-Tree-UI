@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 
 //  Change this to however many levels you want
-const REPEAT_COUNT = 4;
+const REPEAT_COUNT = 2;
 
 const generatePersonMarriageFragment = (depth) => {
   if (depth === 0) return '';
