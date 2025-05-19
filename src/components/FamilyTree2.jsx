@@ -22,7 +22,7 @@ export default class FamilyTree2 extends React.Component {
 
     const f3Card = f3Chart.setCard(f3.CardHtml)
       .setCardDisplay([
-        ["first name", "last name"],
+        ["first_name", "last_name"],
         ["birthday"],
         ["score"]
       ])
@@ -33,7 +33,7 @@ export default class FamilyTree2 extends React.Component {
 
     const f3EditTree = f3Chart.editTree()
       .fixed(true)
-      .setFields(["first name", "last name", "birthday", "avatar", "score"])
+      .setFields(["first_name", "last_name", "birthday", "avatar", "score"])
       .setEditFirst(true);
 
     f3EditTree.setEdit();

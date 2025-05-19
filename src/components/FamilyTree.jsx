@@ -31,7 +31,7 @@ const FamilyTree = ({ personId }) => {
 
     const f3Card = f3Chart.setCard(f3.CardHtml)
       .setCardDisplay([
-        ["first name", "last name", "avatar", "birth_date", "death_date"],
+        ["first_name", "last_name", "avatar", "birth_date", "death_date"],
         ["status"],
         []
       ])
@@ -60,7 +60,7 @@ const FamilyTree = ({ personId }) => {
 
     const f3EditTree = f3Chart.editTree()
       .fixed(true)
-      .setFields(["first name", "last name", "gender", "id", "avatar", "birth_date", "death_date", "is_owner", "status"])
+      .setFields(["first_name", "last_name", "gender", "id", "avatar", "birth_date", "death_date", "is_owner", "status"])
       .setEditFirst(true);
 
     f3EditTree.setEdit();

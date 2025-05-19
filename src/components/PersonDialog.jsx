@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./PersonDialog.css";
 import useCreateSpouse from "../hooks/useCreateSpouse";
 import useCreateParent from "../hooks/useCreateParent";
 import useCreateChild from "../hooks/useCreateChild";
-import { getAuthToken } from "../auth/authToken";
-
+import useGetBloodyPersonAncestry from "../hooks/useGetBloodyPersonAncestry";
+import useGetSpouses from "../hooks/useGetSpouses";
+import { toast } from "react-toastify";
 
 const PersonDialog = ({ personData, onClose }) => {
     if (!personData) return null;
     const { data } = personData;
+    const today = new Date().toISOString().split("T")[0];
+    const fullName = `${data?.data?.first_name || ""} ${data?.data?.last_name || ""}`.trim() || "NA";
 
     const [relationship, setRelationship] = useState("Spouse");
     const [form, setForm] = useState({
@@ -24,11 +27,52 @@ const PersonDialog = ({ personData, onClose }) => {
         child_status: "Separated",
         mobile: "",
         is_owner: false,
+        spouse_id: "",
     });
 
+    const [bloodyHeads, setBloodyHeads] = useState([]);
+    const [spousesList, setSpousesList] = useState([]);
+    const { fetchAncestry } = useGetBloodyPersonAncestry();
+    const { fetchSpouses } = useGetSpouses();
     const { createSpouse } = useCreateSpouse();
     const { createParent } = useCreateParent();
     const { createChild } = useCreateChild();
+
+    const isHead = bloodyHeads?.some((head) => head.person_id === data.id);
+
+    useEffect(() => {
+        if (!personData) return;
+
+        const loadAncestry = async () => {
+            console.log("Fetching ancestry...");
+            try {
+                const heads = await fetchAncestry();
+                console.log("Fetched heads:", heads);
+                setBloodyHeads(heads);
+            } catch (err) {
+                console.error("Failed to load ancestry heads", err);
+            }
+        };
+
+        loadAncestry();
+    }, [personData]);
+
+    useEffect(() => {
+        const loadSpouses = async () => {
+            if (relationship !== "Child") return;
+
+            try {
+                const result = await fetchSpouses(+data.id);
+                setSpousesList(result.data.getPersonSpouses);
+                console.log("all spouses are :", SpousesList);
+            } catch (err) {
+                console.error("Failed to fetch spouses for child", err);
+            }
+        };
+
+        loadSpouses();
+    }, [relationship, data.id]);
+
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -42,51 +86,77 @@ const PersonDialog = ({ personData, onClose }) => {
             if (relationship === "Spouse") {
                 const input = {
                     person_id: data.id,
-                    marriage_date: form.marriage_date || null,
+                    marriage_date: form.marriage_date || today,
                     spouse: {
                         first_name: form.first_name,
                         last_name: form.last_name,
                         birth_date: form.birth_date,
-                        mobile: form.mobile, // include if needed
+                        mobile: form.mobile,
                     },
                     status: form.status || "Active",
                     marriage_status: form.marriage_status || "Related",
                 };
 
-                console.log("Submitting Spouse Mutation:", input);
-
                 await createSpouse(input);
 
             } else if (relationship === "Parents") {
+                if (!isHead) {
+                    toast.error("You can only add parents to head nodes.");
+                    return;
+                }
+
                 const input = {
                     person_id: data.id,
-                    marriage_date: form.marriage_date || null,
-                    divorce_date: form.divorce_date || null,
+                    marriage_date: form.marriage_date || today,
+                    divorce_date: form.divorce_date || today,
                     father: {
                         first_name: form.first_name,
                         last_name: form.last_name,
                         birth_date: form.birth_date,
-                        death_date: form.death_date || null,
+                        death_date: form.death_date || today,
                     },
                     mother: {
                         first_name: `${form.first_name} Mother`,
                         last_name: form.last_name,
                         birth_date: form.birth_date,
-                        death_date: form.death_date || null,
+                        death_date: form.death_date || today,
                     },
                     status: form.status || "Active",
                 };
 
-                console.log("Submitting Parent Mutation:", input);
-
                 await createParent({ variables: { input } });
 
             } else if (relationship === "Child") {
+
+                {
+                    relationship === "Child" && spousesList.length > 0 && (
+                        <label>
+                            Select Spouse:
+                            <select
+                                name="spouse_id"
+                                value={form.spouse_id || ""}
+                                onChange={handleChange}
+                            >
+                                <option value="">-- Select Spouse --</option>
+                                {spousesList.map((spouse) => (
+                                    <option key={spouse.id} value={spouse.id}>
+                                        {spouse.first_name} {spouse.last_name}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                    )
+                }
+
+
                 const genderVal = form.gender === "Male" ? 1 : 0;
 
+                const isMale = personData?.data?.gender === "Male";
+                const isFemale = personData?.data?.gender === "Female";
+
                 const input = {
-                    man_id: personData?.data?.gender === "Male" ? data.id : null,
-                    woman_id: personData?.data?.gender === "Female" ? data.id : null,
+                    man_id: isMale ? data.id : form.spouse_id || null,
+                    woman_id: isFemale ? data.id : form.spouse_id || null,
                     child: {
                         first_name: form.first_name,
                         last_name: form.last_name,
@@ -100,20 +170,18 @@ const PersonDialog = ({ personData, onClose }) => {
                     status: form.status || "Active",
                 };
 
-                console.log("Submitting Child Mutation:", input);
-
                 await createChild({ variables: { input } });
             }
 
-            alert("Submitted successfully");
+            toast.success("Submitted successfully");
             onClose();
+
         } catch (error) {
             console.error("Error submitting form:", error);
-        
             const validation = error?.message?.includes("Validation Error")
                 ? error?.response?.errors?.[0]?.extensions?.validation
                 : null;
-        
+
             if (validation) {
                 Object.entries(validation).forEach(([field, messages]) => {
                     toast.error(`${field}: ${messages.join(", ")}`);
@@ -124,15 +192,14 @@ const PersonDialog = ({ personData, onClose }) => {
                 toast.error("Failed to submit");
             }
         }
-        
-
     };
-
 
     return (
         <div className="dialog-backdrop">
             <div className="dialog-box">
                 <h2>Add {relationship}</h2>
+                <p><strong>ID:</strong> {data?.id}</p>
+                <p><strong>Selected Node:</strong> {fullName || "N/A"}</p>
 
                 <form onSubmit={handleSubmit}>
                     <label>
@@ -148,7 +215,6 @@ const PersonDialog = ({ personData, onClose }) => {
                         </select>
                     </label>
 
-                    {/* Common Fields */}
                     <label>
                         First Name:
                         <input name="first_name" value={form.first_name} onChange={handleChange} />
@@ -161,10 +227,9 @@ const PersonDialog = ({ personData, onClose }) => {
 
                     <label>
                         Birth Date:
-                        <input type="date" name="birth_date" value={form.birth_date} onChange={handleChange} />
+                        <input type="date" name="birth_date" value={form.birth_date ?? today} onChange={handleChange} />
                     </label>
 
-                    {/* Conditional Fields */}
                     {(relationship === "Parents" || relationship === "Child") && (
                         <label>
                             Death Date:
@@ -175,7 +240,7 @@ const PersonDialog = ({ personData, onClose }) => {
                     {(relationship === "Spouse" || relationship === "Parents") && (
                         <label>
                             Marriage Date:
-                            <input type="date" name="marriage_date" value={form.marriage_date} onChange={handleChange} />
+                            <input type="date" name="marriage_date" value={form.marriage_date ?? today} onChange={handleChange} />
                         </label>
                     )}
 
