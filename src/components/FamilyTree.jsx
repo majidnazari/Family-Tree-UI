@@ -27,15 +27,34 @@ const FamilyTree = ({ personId }) => {
     //.setSortChildrenFunction((a, b) => a.data['first name'] === b.data['first name'] ? 0 : a.data['first name'] > b.data['first name'] ? 1 : -1);
 
 
+    // const f3Card = f3Chart.setCard(f3.CardHtml)
+    //   .setCardDisplay([
+    //     ["first name", "last name", "avatar", "birth_date", "death_date"],
+    //     ["status"],
+    //     []
+    //   ])
+    //   .setMiniTree(true)
+    //   .setStyle("imageRect")
+    //   .setOnHoverPathToMain();
+
+
     const f3Card = f3Chart.setCard(f3.CardHtml)
-      .setCardDisplay([
-        ["first name", "last name", "avatar", "birth_date", "death_date"],
-        ["status"],
-        []
-      ])
+      .setCardDisplay((d) => {
+        const person = d.data;
+        const hasDied = !!person["death_date"];
+
+        return `
+      <div class="f3-card-content ${hasDied ? "has-ribbon" : ""}">
+        ${hasDied ? `<div class="black-ribbon"></div>` : ""}
+        <div class="f3-card-name">${person["first name"] || ""} ${person["last name"] || ""}</div>
+        <div class="f3-card-subtitle">${person["birth_date"] || ""} ${person["death_date"] || ""}</div>
+      </div>
+    `;
+      })
       .setMiniTree(true)
       .setStyle("imageRect")
       .setOnHoverPathToMain();
+
 
     const f3EditTree = f3Chart.editTree()
       .fixed(true)
