@@ -88,7 +88,7 @@ const PersonDialog = ({ personData, onClose }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        alert("the submit clicked");
+       
         try {
             if (relationship === "Spouse") {
                 {
@@ -154,8 +154,8 @@ const PersonDialog = ({ personData, onClose }) => {
                 //const isFemale = personData?.data?.gender === "Female";
 
                 const input = {
-                    man_id: selectedPersonGender==="M" ? data.id : form.spouse_id || null,
-                    woman_id: selectedPersonGender==="F"  ? data.id : form.spouse_id || null,
+                    man_id: selectedPersonGender === "M" ? data.id : form.spouse_id || null,
+                    woman_id: selectedPersonGender === "F" ? data.id : form.spouse_id || null,
                     child: {
                         first_name: form.first_name,
                         last_name: form.last_name,
@@ -169,7 +169,7 @@ const PersonDialog = ({ personData, onClose }) => {
                     status: form.status || "Active",
                 };
 
-                await createChild( input );
+                await createChild(input);
 
             }
 
@@ -216,46 +216,98 @@ const PersonDialog = ({ personData, onClose }) => {
                         </select>
                     </label>
 
-                    <label>
-                        First Name:
-                        <input name="first_name" value={form.first_name} onChange={handleChange} />
-                    </label>
+                    {/* === Parents Two-Column Layout === */}
+                    {relationship === "Parents" ? (
+                        <>
+                            <div className="parent-form">
+                                <div className="parent-section">
+                                    <h3><span role="img" aria-label="male">👨</span> Father</h3>
+                                    <label>
+                                        First Name:
+                                        <input name="first_name" value={form.first_name} onChange={handleChange} />
+                                    </label>
+                                    <label>
+                                        Last Name:
+                                        <input name="last_name" value={form.last_name} onChange={handleChange} />
+                                    </label>
+                                    <label>
+                                        Birth Date:
+                                        <input type="date" name="birth_date" value={form.birth_date ?? today} onChange={handleChange} />
+                                    </label>
+                                    <label>
+                                        Death Date:
+                                        <input type="date" name="death_date" value={form.death_date} onChange={handleChange} />
+                                    </label>
+                                </div>
 
-                    <label>
-                        Last Name:
-                        <input name="last_name" value={form.last_name} onChange={handleChange} />
-                    </label>
+                                <div className="parent-section">
+                                    <h3><span role="img" aria-label="female">👩</span> Mother</h3>
+                                    <label>
+                                        First Name:
+                                        <input name="mother_first_name" value={form.mother_first_name || ""} onChange={handleChange} />
+                                    </label>
+                                    <label>
+                                        Last Name:
+                                        <input name="mother_last_name" value={form.mother_last_name || ""} onChange={handleChange} />
+                                    </label>
+                                    <label>
+                                        Birth Date:
+                                        <input type="date" name="mother_birth_date" value={form.mother_birth_date || ""} onChange={handleChange} />
+                                    </label>
+                                    <label>
+                                        Death Date:
+                                        <input type="date" name="mother_death_date" value={form.mother_death_date || ""} onChange={handleChange} />
+                                    </label>
+                                </div>
+                            </div>
 
-                    <label>
-                        Birth Date:
-                        <input type="date" name="birth_date" value={form.birth_date ?? today} onChange={handleChange} />
-                    </label>
+                            <label>
+                                Marriage Date:
+                                <input type="date" name="marriage_date" value={form.marriage_date ?? today} onChange={handleChange} />
+                            </label>
+                            <label>
+                                Divorce Date:
+                                <input type="date" name="divorce_date" value={form.divorce_date} onChange={handleChange} />
+                            </label>
+                        </>
+                    ) : (
+                        <>
+                            {/* === Default Form for Spouse or Child === */}
+                            <label>
+                                First Name:
+                                <input name="first_name" value={form.first_name} onChange={handleChange} />
+                            </label>
 
-                    {(relationship === "Parents" || relationship === "Child") && (
-                        <label>
-                            Death Date:
-                            <input type="date" name="death_date" value={form.death_date} onChange={handleChange} />
-                        </label>
+                            <label>
+                                Last Name:
+                                <input name="last_name" value={form.last_name} onChange={handleChange} />
+                            </label>
+
+                            <label>
+                                Birth Date:
+                                <input type="date" name="birth_date" value={form.birth_date ?? today} onChange={handleChange} />
+                            </label>
+
+                            {(relationship === "Child") && (
+                                <label>
+                                    Death Date:
+                                    <input type="date" name="death_date" value={form.death_date} onChange={handleChange} />
+                                </label>
+                            )}
+
+                            {(relationship === "Spouse") && (
+                                <label>
+                                    Marriage Date:
+                                    <input type="date" name="marriage_date" value={form.marriage_date ?? today} onChange={handleChange} />
+                                </label>
+                            )}
+                        </>
                     )}
 
-                    {(relationship === "Spouse" || relationship === "Parents") && (
-                        <label>
-                            Marriage Date:
-                            <input type="date" name="marriage_date" value={form.marriage_date ?? today} onChange={handleChange} />
-                        </label>
-                    )}
-
-                    {relationship === "Parents" && (
-                        <label>
-                            Divorce Date:
-                            <input type="date" name="divorce_date" value={form.divorce_date} onChange={handleChange} />
-                        </label>
-                    )}
-
+                    {/* === Child-specific Fields === */}
                     {relationship === "Child" && (
                         <>
-
-                            {relationship === "Child" && spousesList.length > 0 && (
+                            {spousesList.length > 0 && (
                                 <label>
                                     Select Spouse:
                                     <select
@@ -272,6 +324,7 @@ const PersonDialog = ({ personData, onClose }) => {
                                     </select>
                                 </label>
                             )}
+
                             <label>
                                 Gender:
                                 <select name="gender" value={form.gender} onChange={handleChange}>
@@ -305,11 +358,6 @@ const PersonDialog = ({ personData, onClose }) => {
                             </label>
 
                             <label>
-                                Is Owner:
-                                <input type="checkbox" name="is_owner" checked={form.is_owner} onChange={handleChange} />
-                            </label>
-
-                            <label>
                                 Mobile:
                                 <input name="mobile" value={form.mobile} onChange={handleChange} />
                             </label>
@@ -324,6 +372,6 @@ const PersonDialog = ({ personData, onClose }) => {
             </div>
         </div>
     );
-};
 
+}
 export default PersonDialog;
