@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./PersonDialog.css";
-import useCreateSpouse from "../hooks/useCreateSpouse";
-import useCreateParent from "../hooks/useCreateParent";
-import useCreateChild from "../hooks/useCreateChild";
-import useGetBloodyPersonAncestry from "../hooks/useGetBloodyPersonAncestry";
-import useGetSpouses from "../hooks/useGetSpouses";
+import useCreateSpouse from "../../hooks/useCreateSpouse";
+import useCreateParent from "../../hooks/useCreateParent";
+import useCreateChild from "../../hooks/useCreateChild";
+import useGetBloodyPersonAncestry from "../../hooks/useGetBloodyPersonAncestry";
+import useGetSpouses from "../../hooks/useGetSpouses";
 import { toast } from "react-toastify";
 
 const PersonDialog = ({ personData, onClose }) => {
@@ -137,7 +137,7 @@ const PersonDialog = ({ personData, onClose }) => {
                     status: form.status || "Active",
                 };
 
-                await createParent({ variables: { input } });
+                await createParent( input );
 
             } else if (relationship === "Child") {
 

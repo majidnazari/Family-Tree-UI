@@ -2,8 +2,8 @@
 import React, { useEffect, useRef,useState } from "react";
 import f3 from "family-chart";
 import "family-chart/styles/family-chart.css";
-import useFamilyTreeData from "../hooks/useFamilyTreeData"; //  import the hook
-import PersonDialog from "./PersonDialog";
+import useFamilyTreeData from "../../hooks/useFamilyTreeData"; //  import the hook
+import PersonDialog from "../personDialogComponent/PersonDialog";
 
 const FamilyTree = ({ personId }) => {
 
