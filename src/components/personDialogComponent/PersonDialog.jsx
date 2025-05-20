@@ -129,10 +129,10 @@ const PersonDialog = ({ personData, onClose }) => {
                         death_date: form.death_date || today,
                     },
                     mother: {
-                        first_name: `${form.first_name} Mother`,
-                        last_name: form.last_name,
-                        birth_date: form.birth_date,
-                        death_date: form.death_date || today,
+                        first_name: `${form.mother_first_name} Mother`,
+                        last_name: form.mother_last_name,
+                        birth_date: form.mother_birth_date,
+                        death_date: form.mother_death_date || today,
                     },
                     status: form.status || "Active",
                 };

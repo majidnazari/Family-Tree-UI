@@ -21,7 +21,7 @@ const useCreateParent = () => {
             },
             mother: {
               first_name: "${input.mother.first_name}",
-              last_name: "${input.mother.last_name}",
+              last_name: "${input.motherlast_name}",
               birth_date: "${input.mother.birth_date}",
               death_date: "${input.mother.death_date || ""}"
             },
