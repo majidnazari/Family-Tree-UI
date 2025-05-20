@@ -10,6 +10,9 @@ import { toast } from "react-toastify";
 const PersonDialog = ({ personData, onClose }) => {
     if (!personData) return null;
     const { data } = personData;
+    {
+        //console.log("the gender of seleted node is :" , data.data.gender)
+    }
     const today = new Date().toISOString().split("T")[0];
     const fullName = `${data?.data?.first_name || ""} ${data?.data?.last_name || ""}`.trim() || "NA";
 
@@ -59,12 +62,16 @@ const PersonDialog = ({ personData, onClose }) => {
 
     useEffect(() => {
         const loadSpouses = async () => {
-            if (relationship !== "Child") return;
-
+            //alert("the relationship is :" + relationship);
+            if (relationship !== "Child") {
+                setSpousesList([]);
+                return;
+            }
             try {
                 const result = await fetchSpouses(+data.id);
-                setSpousesList(result.data.getPersonSpouses);
-                console.log("all spouses are :", SpousesList);
+                setSpousesList(result?.data || []);
+                console.log("all spouses in useeffect  are :", result);
+                console.log("the spousesList  in useeffect  is  :", spousesList);
             } catch (err) {
                 console.error("Failed to fetch spouses for child", err);
             }
@@ -81,9 +88,12 @@ const PersonDialog = ({ personData, onClose }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        alert("the submit clicked");
         try {
             if (relationship === "Spouse") {
+                {
+                    console.log("form in spouse:", form);
+                }
                 const input = {
                     person_id: data.id,
                     marriage_date: form.marriage_date || today,
@@ -100,6 +110,9 @@ const PersonDialog = ({ personData, onClose }) => {
                 await createSpouse(input);
 
             } else if (relationship === "Parents") {
+                {
+                    console.log("form in parent:", form);
+                }
                 if (!isHead) {
                     toast.error("You can only add parents to head nodes.");
                     return;
@@ -129,34 +142,20 @@ const PersonDialog = ({ personData, onClose }) => {
             } else if (relationship === "Child") {
 
                 {
-                    relationship === "Child" && spousesList.length > 0 && (
-                        <label>
-                            Select Spouse:
-                            <select
-                                name="spouse_id"
-                                value={form.spouse_id || ""}
-                                onChange={handleChange}
-                            >
-                                <option value="">-- Select Spouse --</option>
-                                {spousesList.map((spouse) => (
-                                    <option key={spouse.id} value={spouse.id}>
-                                        {spouse.first_name} {spouse.last_name}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
-                    )
+                    console.log("form in child:", form);
                 }
-
-
                 const genderVal = form.gender === "Male" ? 1 : 0;
+                const selectedPersonGender = data.data.gender; // "M" or "F"
 
-                const isMale = personData?.data?.gender === "Male";
-                const isFemale = personData?.data?.gender === "Female";
+                {
+                    console.log("selectedPersonGender:", selectedPersonGender);
+                }
+                //const isMale = personData?.data?.gender === "Male";
+                //const isFemale = personData?.data?.gender === "Female";
 
                 const input = {
-                    man_id: isMale ? data.id : form.spouse_id || null,
-                    woman_id: isFemale ? data.id : form.spouse_id || null,
+                    man_id: selectedPersonGender==="M" ? data.id : form.spouse_id || null,
+                    woman_id: selectedPersonGender==="F"  ? data.id : form.spouse_id || null,
                     child: {
                         first_name: form.first_name,
                         last_name: form.last_name,
@@ -170,14 +169,16 @@ const PersonDialog = ({ personData, onClose }) => {
                     status: form.status || "Active",
                 };
 
-                await createChild({ variables: { input } });
+                await createChild( input );
+
             }
 
             toast.success("Submitted successfully");
             onClose();
 
         } catch (error) {
-            console.error("Error submitting form:", error);
+            // console.error("Error submitting form:", error);
+            console.error("GraphQL Error details:", JSON.stringify(error, null, 2));
             const validation = error?.message?.includes("Validation Error")
                 ? error?.response?.errors?.[0]?.extensions?.validation
                 : null;
@@ -253,6 +254,24 @@ const PersonDialog = ({ personData, onClose }) => {
 
                     {relationship === "Child" && (
                         <>
+
+                            {relationship === "Child" && spousesList.length > 0 && (
+                                <label>
+                                    Select Spouse:
+                                    <select
+                                        name="spouse_id"
+                                        value={form.spouse_id || ""}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">-- Select Spouse --</option>
+                                        {spousesList.map((spouse) => (
+                                            <option key={spouse.id} value={spouse.id}>
+                                                {spouse.first_name} {spouse.last_name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+                            )}
                             <label>
                                 Gender:
                                 <select name="gender" value={form.gender} onChange={handleChange}>

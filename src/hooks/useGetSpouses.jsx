@@ -34,7 +34,7 @@ const useGetSpouses = () => {
         fetchPolicy: "no-cache", // Always fetch fresh data
       });
 
-      return data.getPersonSpouses.data || [];
+      return data.getPersonSpouses || [];
     } catch (err) {
       console.error("Failed to fetch spouses:", err);
       toast.error("Failed to load spouse options");
