@@ -1,15 +1,30 @@
-// components/FamilyTree.jsx
-import React, { useEffect, useRef,useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import f3 from "family-chart";
 import "family-chart/styles/family-chart.css";
-import useFamilyTreeData from "../../hooks/useFamilyTreeData"; //  import the hook
+import useFamilyTreeData from "../../hooks/useFamilyTreeData";
 import PersonDialog from "../personDialogComponent/PersonDialog";
+import SettingsDialog from "../settingDialogComponent/SettingsDialog";
 
 const FamilyTree = ({ personId }) => {
-
   const cont = useRef(null);
-  const { treeData, loading } = useFamilyTreeData(personId); //  use the hook
-  const [selectedPerson, setSelectedPerson] = useState(null); // <-- state for dialog
+  const { treeData, loading } = useFamilyTreeData(personId);
+
+  const [selectedPerson, setSelectedPerson] = useState(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const [settings, setSettings] = useState({
+    orientation: "vertical",
+    cardXSpacing: 250,
+    cardYSpacing: 150,
+    transitionTime: 1000,
+    miniTree: true,
+    singleParentEmptyCard: true,
+    emptyCardLabel: "ADD",
+    cardDisplayLines: [
+      "first_name,last_name,avatar,birth_date,death_date", // Line 1
+      "status",                                            // Line 2
+      ""                                                   // Line 3
+    ],
+  });
 
   useEffect(() => {
     if (loading || !cont.current || treeData.length === 0) return;
@@ -19,37 +34,40 @@ const FamilyTree = ({ personId }) => {
 
     const f3Chart = f3
       .createChart("#FamilyChart", treeData)
-      .setTransitionTime(1000)
-      .setCardXSpacing(250)
-      .setCardYSpacing(150)
-      .setOrientationVertical()
-      .setSingleParentEmptyCard(true, { label: "ADD" });
-    //.setAncestryDepth(1)
-    //.setProgenyDepth(5)
-    //.setSortChildrenFunction((a, b) => a.data['first name'] === b.data['first name'] ? 0 : a.data['first name'] > b.data['first name'] ? 1 : -1);
+      .setTransitionTime(settings.transitionTime)
+      .setCardXSpacing(settings.cardXSpacing)
+      .setCardYSpacing(settings.cardYSpacing)
+      .setSingleParentEmptyCard(settings.singleParentEmptyCard, {
+        label: settings.emptyCardLabel,
+      });
 
+
+    if (settings.orientation === "vertical") {
+      f3Chart.setOrientationVertical();
+    } else {
+      f3Chart.setOrientationHorizontal();
+    }
 
     const f3Card = f3Chart.setCard(f3.CardHtml)
-      .setCardDisplay([
-        ["first_name", "last_name", "avatar", "birth_date", "death_date"],
-        ["status"],
-        []
-      ])
-      .setMiniTree(true)
+      .setCardDisplay(
+        settings.cardDisplayLines.map(line => line.split(',').map(f => f.trim()).filter(Boolean))
+      )
+      .setMiniTree(settings.miniTree)
       .setStyle("imageRect")
       .setOnHoverPathToMain();
 
-
     const f3EditTree = f3Chart.editTree()
       .fixed(true)
-      .setFields(["first_name", "last_name", "gender", "id", "avatar", "birth_date", "death_date", "is_owner", "status"])
+      .setFields([
+        "first_name", "last_name", "gender", "id",
+        "avatar", "birth_date", "death_date", "is_owner", "status"
+      ])
       .setEditFirst(true);
 
     f3EditTree.setEdit();
 
     f3Card.setOnCardClick((e, d) => {
-      console.log("Clicked person data:", d);
-      setSelectedPerson(d); // <-- open dialog with clicked person
+      setSelectedPerson(d);
       f3EditTree.open(d);
       if (f3EditTree.isAddingRelative()) return;
       f3Card.onCardClickDefault(e, d);
@@ -57,17 +75,24 @@ const FamilyTree = ({ personId }) => {
 
     f3Chart.updateTree({ initial: true });
     f3EditTree.open(f3Chart.getMainDatum());
-
     f3Chart.updateTree({ initial: true });
-  }, [treeData, loading]);
 
-
-  //return <div className="f3 f3-cont" id="FamilyChart" ref={cont}></div>;
+  }, [treeData, loading, settings]);
 
   return (
     <>
+      <div style={{ textAlign: "right", marginBottom: 10, marginRight: 20 }}>
+        <button onClick={() => setShowSettings(true)}>⚙️ Settings</button>
+      </div>
       <div className="f3 f3-cont" id="FamilyChart" ref={cont}></div>
+
       <PersonDialog personData={selectedPerson} onClose={() => setSelectedPerson(null)} />
+      <SettingsDialog
+        open={showSettings}
+        onClose={() => setShowSettings(false)}
+        settings={settings}
+        onChange={setSettings}
+      />
     </>
   );
 };
