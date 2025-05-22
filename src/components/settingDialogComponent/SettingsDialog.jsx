@@ -1,4 +1,3 @@
-// components/settingsDialogComponent/SettingsDialog.jsx
 import React from "react";
 import { Dialog } from "@mui/material";
 import { FiPlus, FiX } from "react-icons/fi";
@@ -6,7 +5,12 @@ import { FiPlus, FiX } from "react-icons/fi";
 const SettingsDialog = ({ open, onClose, settings, onChange }) => {
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const parsedValue = type === "checkbox" ? checked : parseInt(value);
+    const parsedValue =
+      type === "checkbox"
+        ? checked
+        : type === "number" || type === "range"
+        ? parseInt(value)
+        : value;
     onChange({ ...settings, [name]: parsedValue });
   };
 
@@ -25,105 +29,267 @@ const SettingsDialog = ({ open, onClose, settings, onChange }) => {
     onChange({ ...settings, cardDisplayLines: updated });
   };
 
+  const resetCardAndImageSettings = () => {
+    onChange({
+      ...settings,
+      cardWidth: "",
+      cardHeight: "",
+      imageWidth: "",
+      imageHeight: "",
+      imageX: "",
+      imageY: "",
+    });
+  };
+
   return (
-    <Dialog open={open} onClose={onClose}>
-      <div style={{ padding: "20px", width: "400px" }}>
-        <h2>Chart Settings</h2>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <div style={{ padding: "20px", display: "flex", flexWrap: "wrap", gap: "40px" }}>
+        {/* Left Column */}
+        <div style={{ flex: 1, minWidth: "300px" }}>
+          <h2>Chart Settings</h2>
 
-        <label>Orientation:</label>
-        <select name="orientation" value={settings.orientation} onChange={handleInputChange}>
-          <option value="vertical">Vertical</option>
-          <option value="horizontal">Horizontal</option>
-        </select>
-
-        <br /><br />
-
-        <label>Card X Spacing:</label>
-        <input
-          type="number"
-          name="cardXSpacing"
-          value={settings.cardXSpacing}
-          onChange={handleInputChange}
-        />
-
-        <br /><br />
-
-        <label>Card Y Spacing:</label>
-        <input
-          type="number"
-          name="cardYSpacing"
-          value={settings.cardYSpacing}
-          onChange={handleInputChange}
-        />
-
-        <br /><br />
-
-        <label>Transition Time (ms):</label>
-        <input
-          type="number"
-          name="transitionTime"
-          value={settings.transitionTime}
-          onChange={handleInputChange}
-        />
-
-        <br /><br />
-
-        <label>
-          <input
-            type="checkbox"
-            name="miniTree"
-            checked={settings.miniTree}
-            onChange={handleInputChange}
-          />
-          Enable Mini Tree
-        </label>
-
-        <br /><br />
-
-        <label>
-          <input
-            type="checkbox"
-            name="singleParentEmptyCard"
-            checked={settings.singleParentEmptyCard}
-            onChange={handleInputChange}
-          />
-          Show "Add" for single parents
-        </label>
-
-        <br /><br />
-
-        <label>Empty Card Label:</label>
-        <input
-          type="text"
-          name="emptyCardLabel"
-          value={settings.emptyCardLabel}
-          onChange={handleInputChange}
-        />
-
-        <br /><br />
-
-        <h4>Card Display Fields</h4>
-        {settings.cardDisplayLines.map((line, index) => (
-          <div key={index} style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
+          <label>
             <input
-              type="text"
-              value={line}
-              onChange={(e) => handleCardLineChange(index, e.target.value)}
-              placeholder="e.g., first_name,last_name"
-              style={{ flex: 1, marginRight: 8 }}
+              type="checkbox"
+              name="enableEditMode"
+              checked={settings.enableEditMode}
+              onChange={handleInputChange}
             />
-            <button onClick={() => removeCardLine(index)} style={{ background: "none", border: "none" }}>
-              <FiX size={18} />
-            </button>
+            Enable Edit Mode
+          </label>
+
+          <br /><br />
+
+          <label>Orientation:</label>
+          <select name="orientation" value={settings.orientation} onChange={handleInputChange}>
+            <option value="vertical">Vertical</option>
+            <option value="horizontal">Horizontal</option>
+          </select>
+
+          <br /><br />
+
+          <label>Card X Spacing:</label>
+          <input
+            type="number"
+            name="cardXSpacing"
+            value={settings.cardXSpacing}
+            onChange={handleInputChange}
+          />
+
+          <br /><br />
+
+          <label>Card Y Spacing:</label>
+          <input
+            type="number"
+            name="cardYSpacing"
+            value={settings.cardYSpacing}
+            onChange={handleInputChange}
+          />
+
+          <br /><br />
+
+          <label>Transition Time (ms):</label>
+          <input
+            type="number"
+            name="transitionTime"
+            value={settings.transitionTime}
+            onChange={handleInputChange}
+          />
+
+          <br /><br />
+
+          <label>
+            <input
+              type="checkbox"
+              name="miniTree"
+              checked={settings.miniTree}
+              onChange={handleInputChange}
+            />
+            Enable Mini Tree
+          </label>
+
+          <br /><br />
+
+          <label>
+            <input
+              type="checkbox"
+              name="singleParentEmptyCard"
+              checked={settings.singleParentEmptyCard}
+              onChange={handleInputChange}
+            />
+            Show "Add" for single parents
+          </label>
+
+          <br /><br />
+
+          <label>Empty Card Label:</label>
+          <input
+            type="text"
+            name="emptyCardLabel"
+            value={settings.emptyCardLabel}
+            onChange={handleInputChange}
+          />
+
+          <br /><br />
+
+          <h4>Card Dimensions</h4>
+
+          <label>Card Width:</label>
+          <input
+            type="range"
+            name="cardWidth"
+            min="100"
+            max="600"
+            step="10"
+            value={settings.cardWidth || 250}
+            onChange={handleInputChange}
+          />
+          <span>{settings.cardWidth ? `${settings.cardWidth}px` : "auto"}</span>
+
+          <br /><br />
+
+          <label>Card Height:</label>
+          <input
+            type="range"
+            name="cardHeight"
+            min="60"
+            max="400"
+            step="10"
+            value={settings.cardHeight || 150}
+            onChange={handleInputChange}
+          />
+          <span>{settings.cardHeight ? `${settings.cardHeight}px` : "auto"}</span>
+
+          <br /><br />
+
+          <h4>Image Dimensions</h4>
+
+          <label>Image Width:</label>
+          <input
+            type="range"
+            name="imageWidth"
+            min="20"
+            max="300"
+            step="1"
+            value={settings.imageWidth || 100}
+            onChange={handleInputChange}
+          />
+          <span>{settings.imageWidth ? `${settings.imageWidth}px` : "auto"}</span>
+
+          <br /><br />
+
+          <label>Image Height:</label>
+          <input
+            type="range"
+            name="imageHeight"
+            min="20"
+            max="300"
+            step="1"
+            value={settings.imageHeight || 100}
+            onChange={handleInputChange}
+          />
+          <span>{settings.imageHeight ? `${settings.imageHeight}px` : "auto"}</span>
+
+          <br /><br />
+
+          <label>Image X Position:</label>
+          <input
+            type="range"
+            name="imageX"
+            min="-100"
+            max="200"
+            step="1"
+            value={settings.imageX || 0}
+            onChange={handleInputChange}
+          />
+          <span>{settings.imageX || 0}px</span>
+
+          <br /><br />
+
+          <label>Image Y Position:</label>
+          <input
+            type="range"
+            name="imageY"
+            min="-100"
+            max="200"
+            step="1"
+            value={settings.imageY || 0}
+            onChange={handleInputChange}
+          />
+          <span>{settings.imageY || 0}px</span>
+
+          <br /><br />
+
+          <button onClick={resetCardAndImageSettings}>
+            🔄 Reset Card & Image Settings
+          </button>
+        </div>
+
+        {/* Right Column */}
+        <div style={{ flex: 1, minWidth: "300px" }}>
+          <h4>Card Display Fields</h4>
+          {settings.cardDisplayLines.map((line, index) => (
+            <div key={index} style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
+              <input
+                type="text"
+                value={line}
+                onChange={(e) => handleCardLineChange(index, e.target.value)}
+                placeholder="e.g., first_name,last_name"
+                style={{ flex: 1, marginRight: 8 }}
+              />
+              <button onClick={() => removeCardLine(index)} style={{ background: "none", border: "none" }}>
+                <FiX size={18} />
+              </button>
+            </div>
+          ))}
+
+          <button onClick={addCardLine} style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 10 }}>
+            <FiPlus /> Add Line
+          </button>
+
+          <br /><br />
+
+          <h4>Card Style</h4>
+          <div>
+            <label>
+              <input
+                type="radio"
+                name="cardStyle"
+                value="imageRect"
+                checked={settings.cardStyle === "imageRect"}
+                onChange={handleInputChange}
+              />
+              Image Rectangle
+            </label>
+            <br />
+            <label>
+              <input
+                type="radio"
+                name="cardStyle"
+                value="imageCircle"
+                checked={settings.cardStyle === "imageCircle"}
+                onChange={handleInputChange}
+              />
+              Image Circle
+            </label>
+            <br />
+            <label>
+              <input
+                type="radio"
+                name="cardStyle"
+                value="rect"
+                checked={settings.cardStyle === "rect"}
+                onChange={handleInputChange}
+              />
+              Rectangle (No Image)
+            </label>
           </div>
-        ))}
+        </div>
 
-        <button onClick={addCardLine} style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 10 }}>
-          <FiPlus /> Add Line
-        </button>
-
-        <br /><br />
-        <button onClick={onClose}>Close</button>
+        {/* Footer */}
+        <div style={{ width: "100%", textAlign: "right", marginTop: 20 }}>
+          <button onClick={onClose}>Close</button>
+        </div>
       </div>
     </Dialog>
   );

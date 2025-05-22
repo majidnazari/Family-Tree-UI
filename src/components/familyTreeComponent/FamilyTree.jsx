@@ -1,3 +1,4 @@
+// FamilyTree.tsx
 import React, { useEffect, useRef, useState } from "react";
 import f3 from "family-chart";
 import "family-chart/styles/family-chart.css";
@@ -19,10 +20,18 @@ const FamilyTree = ({ personId }) => {
     miniTree: true,
     singleParentEmptyCard: true,
     emptyCardLabel: "ADD",
+    enableEditMode: true,
+    cardStyle: "imageRect",
+    cardWidth: "",
+    cardHeight: "",
+    imageWidth: "",
+    imageHeight: "",
+    imageX: "",
+    imageY: "",
     cardDisplayLines: [
-      "first_name,last_name,avatar,birth_date,death_date", // Line 1
-      "status",                                            // Line 2
-      ""                                                   // Line 3
+      "first_name,last_name,avatar,birth_date,death_date",
+      "status",
+      ""
     ],
   });
 
@@ -41,42 +50,60 @@ const FamilyTree = ({ personId }) => {
         label: settings.emptyCardLabel,
       });
 
+    settings.orientation === "vertical"
+      ? f3Chart.setOrientationVertical()
+      : f3Chart.setOrientationHorizontal();
 
-    if (settings.orientation === "vertical") {
-      f3Chart.setOrientationVertical();
-    } else {
-      f3Chart.setOrientationHorizontal();
-    }
-
-    const f3Card = f3Chart.setCard(f3.CardHtml)
+    const f3Card = f3Chart
+      .setCard(f3.CardHtml)
       .setCardDisplay(
-        settings.cardDisplayLines.map(line => line.split(',').map(f => f.trim()).filter(Boolean))
+        settings.cardDisplayLines.map(line =>
+          line.split(",").map(f => f.trim()).filter(Boolean)
+        )
       )
       .setMiniTree(settings.miniTree)
-      .setStyle("imageRect")
+      .setStyle(settings.cardStyle)
       .setOnHoverPathToMain();
 
-    const f3EditTree = f3Chart.editTree()
-      .fixed(true)
-      .setFields([
-        "first_name", "last_name", "gender", "id",
-        "avatar", "birth_date", "death_date", "is_owner", "status"
-      ])
-      .setEditFirst(true);
+    const dimOptions = {};
+    if (settings.cardWidth) dimOptions.width = +settings.cardWidth;
+    if (settings.cardHeight) dimOptions.height = +settings.cardHeight;
+    if (settings.imageWidth) dimOptions.img_width = +settings.imageWidth;
+    if (settings.imageHeight) dimOptions.img_height = +settings.imageHeight;
+    if (settings.imageX) dimOptions.img_x = +settings.imageX;
+    if (settings.imageY) dimOptions.img_y = +settings.imageY;
 
-    f3EditTree.setEdit();
+    if (Object.keys(dimOptions).length > 0) {
+      f3Card.setCardDim(dimOptions);
+    }
 
-    f3Card.setOnCardClick((e, d) => {
-      setSelectedPerson(d);
-      f3EditTree.open(d);
-      if (f3EditTree.isAddingRelative()) return;
-      f3Card.onCardClickDefault(e, d);
-    });
+    if (settings.enableEditMode) {
+      const f3EditTree = f3Chart
+        .editTree()
+        .fixed(true)
+        .setFields([
+          "first_name", "last_name", "gender", "id",
+          "avatar", "birth_date", "death_date", "is_owner", "status"
+        ])
+        .setEditFirst(true);
 
-    f3Chart.updateTree({ initial: true });
-    f3EditTree.open(f3Chart.getMainDatum());
-    f3Chart.updateTree({ initial: true });
+      f3EditTree.setEdit();
 
+      f3Card.setOnCardClick((e, d) => {
+        setSelectedPerson(d);
+        f3EditTree.open(d);
+        if (f3EditTree.isAddingRelative()) return;
+        f3Card.onCardClickDefault(e, d);
+      });
+
+      f3Chart.updateTree({ initial: true });
+      f3EditTree.open(f3Chart.getMainDatum());
+    } else {
+      f3Card.setOnCardClick((e, d) => {
+        f3Card.onCardClickDefault(e, d);
+      });
+      f3Chart.updateTree({ initial: true });
+    }
   }, [treeData, loading, settings]);
 
   return (
@@ -87,6 +114,7 @@ const FamilyTree = ({ personId }) => {
       <div className="f3 f3-cont" id="FamilyChart" ref={cont}></div>
 
       <PersonDialog personData={selectedPerson} onClose={() => setSelectedPerson(null)} />
+
       <SettingsDialog
         open={showSettings}
         onClose={() => setShowSettings(false)}
