@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog } from "@mui/material";
+import { Dialog, Input, InputLabel, Box } from "@mui/material";
 import { FiPlus, FiX } from "react-icons/fi";
 
 const SettingsDialog = ({ open, onClose, settings, onChange }) => {
@@ -47,6 +47,37 @@ const SettingsDialog = ({ open, onClose, settings, onChange }) => {
         {/* Left Column */}
         <div style={{ flex: 1, minWidth: "300px" }}>
           <h2>Chart Settings</h2>
+
+          {/* Root Person ID */}
+          <label>Root Person ID:</label>
+          <input
+            type="text"
+            name="personId"
+            value={settings.personId}
+            onChange={handleInputChange}
+          />
+          <br /><br />
+
+          {/* Repeat Count (compact input) */}
+          <Box display="flex" alignItems="center" gap={1}>
+            <InputLabel htmlFor="repeat-count" shrink>Repeat Count:</InputLabel>
+            <Input
+              id="repeat-count"
+              type="number"
+              value={settings.repeatCount}
+              onChange={(e) =>
+                onChange({
+                  ...settings,
+                  repeatCount: Math.max(0, Math.min(99, parseInt(e.target.value) || 0)),
+                })
+              }
+              inputProps={{ min: 0, max: 99 }}
+              size="small"
+              sx={{ width: 60 }}
+            />
+          </Box>
+
+          <br /><br />
 
           <label>
             <input

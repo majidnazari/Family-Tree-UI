@@ -8,7 +8,7 @@ import SettingsDialog from "../settingDialogComponent/SettingsDialog";
 
 const FamilyTree = ({ personId }) => {
   const cont = useRef(null);
-  const { treeData, loading } = useFamilyTreeData(personId);
+
 
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
@@ -21,6 +21,8 @@ const FamilyTree = ({ personId }) => {
     singleParentEmptyCard: true,
     emptyCardLabel: "ADD",
     enableEditMode: true,
+    personId: "1",
+    repeatCount: 2,
     cardStyle: "imageRect",
     cardWidth: "",
     cardHeight: "",
@@ -35,6 +37,9 @@ const FamilyTree = ({ personId }) => {
     ],
   });
 
+  const { treeData, loading } = useFamilyTreeData(settings.personId || "1", settings.repeatCount);
+
+  
   useEffect(() => {
     if (loading || !cont.current || treeData.length === 0) return;
 
