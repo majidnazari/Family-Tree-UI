@@ -47,7 +47,7 @@ const generatePersonMarriageFragment = (depth) => {
     `;
 };
 
-const useFamilyTreeData = (personId, maxLevel = 2) => {
+const useFamilyTreeData = (personId, maxLevel=2 ) => {
   const [treeData, setTreeData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -71,7 +71,9 @@ const useFamilyTreeData = (personId, maxLevel = 2) => {
                         }
                     }
                 `;
-
+{
+ // console.log("the final query is :" , query)
+}
         const response = await fetch("http://localhost:8000/graphql", {
           method: "POST",
           headers: {
@@ -100,7 +102,7 @@ const useFamilyTreeData = (personId, maxLevel = 2) => {
     };
 
     fetchFamilyTree();
-  }, [personId]);
+  }, [personId,maxLevel]);
 
   return { treeData, loading };
 };
