@@ -47,7 +47,7 @@ const generatePersonMarriageFragment = (depth) => {
     `;
 };
 
-const useFamilyTreeData = (personId, repeatCount = 2) => {
+const useFamilyTreeData = (personId, maxLevel = 2) => {
   const [treeData, setTreeData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -67,7 +67,7 @@ const useFamilyTreeData = (personId, repeatCount = 2) => {
                             death_date
                             is_owner
                             status
-                            ${generatePersonMarriageFragment(repeatCount)}
+                            ${generatePersonMarriageFragment(maxLevel)}
                         }
                     }
                 `;

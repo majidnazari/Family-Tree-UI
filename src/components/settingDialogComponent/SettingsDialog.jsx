@@ -9,8 +9,8 @@ const SettingsDialog = ({ open, onClose, settings, onChange }) => {
       type === "checkbox"
         ? checked
         : type === "number" || type === "range"
-        ? parseInt(value)
-        : value;
+          ? parseInt(value)
+          : value;
     onChange({ ...settings, [name]: parsedValue });
   };
 
@@ -53,22 +53,25 @@ const SettingsDialog = ({ open, onClose, settings, onChange }) => {
           <input
             type="text"
             name="personId"
-            value={settings.personId}
-            onChange={handleInputChange}
+            defaultValue={settings.personId}
+            onBlur={(e) => {
+              const value = e.target.value;
+              onChange({ ...settings, personId: value });
+            }}
           />
           <br /><br />
 
           {/* Repeat Count (compact input) */}
           <Box display="flex" alignItems="center" gap={1}>
-            <InputLabel htmlFor="repeat-count" shrink>Repeat Count:</InputLabel>
+            <InputLabel htmlFor="repeat-count" shrink>Max Level:</InputLabel>
             <Input
               id="repeat-count"
               type="number"
-              value={settings.repeatCount}
+              value={settings.maxLevel}
               onChange={(e) =>
                 onChange({
                   ...settings,
-                  repeatCount: Math.max(0, Math.min(99, parseInt(e.target.value) || 0)),
+                  maxLevel: Math.max(0, Math.min(99, parseInt(e.target.value) || 0)),
                 })
               }
               inputProps={{ min: 0, max: 99 }}

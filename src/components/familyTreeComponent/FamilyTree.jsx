@@ -22,7 +22,7 @@ const FamilyTree = ({ personId }) => {
     emptyCardLabel: "ADD",
     enableEditMode: true,
     personId: "1",
-    repeatCount: 2,
+    maxLevel: 2,
     cardStyle: "imageRect",
     cardWidth: "",
     cardHeight: "",
@@ -37,7 +37,7 @@ const FamilyTree = ({ personId }) => {
     ],
   });
 
-  const { treeData, loading } = useFamilyTreeData(settings.personId || "1", settings.repeatCount);
+  const { treeData, loading } = useFamilyTreeData(settings.personId || "1", settings.maxLevel);
 
   
   useEffect(() => {
