@@ -7,11 +7,10 @@ import PersonDialog from "../personDialogComponent/PersonDialog";
 import SettingsDialog from "../settingDialogComponent/SettingsDialog";
 
 const FamilyTree = ({ personId }) => {
-  const cont = useRef(null);
-
-
+  const containerRef = useRef(null);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
+
   const [settings, setSettings] = useState({
     orientation: "vertical",
     cardXSpacing: 250,
@@ -21,7 +20,7 @@ const FamilyTree = ({ personId }) => {
     singleParentEmptyCard: true,
     emptyCardLabel: "ADD",
     enableEditMode: true,
-    personId: "1",
+    personId: personId || "1",
     maxLevel: 2,
     cardStyle: "imageRect",
     cardWidth: "",
@@ -37,17 +36,16 @@ const FamilyTree = ({ personId }) => {
     ],
   });
 
-  const { treeData, loading } = useFamilyTreeData(settings.personId || "1", settings.maxLevel);
+  const { treeData, loading } = useFamilyTreeData(settings.personId, settings.maxLevel);
 
-  
   useEffect(() => {
-    if (loading || !cont.current || treeData.length === 0) return;
+    if (loading || !containerRef.current || treeData.length === 0) return;
 
-    const container = cont.current;
+    const container = containerRef.current;
     container.innerHTML = "";
 
     const f3Chart = f3
-      .createChart("#FamilyChart", treeData)
+      .createChart(container, treeData)
       .setTransitionTime(settings.transitionTime)
       .setCardXSpacing(settings.cardXSpacing)
       .setCardYSpacing(settings.cardYSpacing)
@@ -116,9 +114,13 @@ const FamilyTree = ({ personId }) => {
       <div style={{ textAlign: "right", marginBottom: 10, marginRight: 20 }}>
         <button onClick={() => setShowSettings(true)}>⚙️ Settings</button>
       </div>
-      <div className="f3 f3-cont" id="FamilyChart" ref={cont}></div>
 
-      <PersonDialog personData={selectedPerson} onClose={() => setSelectedPerson(null)} />
+      <div className="f3 f3-cont" id="FamilyChart" ref={containerRef}></div>
+
+      <PersonDialog
+        personData={selectedPerson}
+        onClose={() => setSelectedPerson(null)}
+      />
 
       <SettingsDialog
         open={showSettings}

@@ -10,11 +10,10 @@ function App() {
 
   return (
     <>
-     
-      <h1>Family Tree</h1>
-      <FamilyTree/>
-
-      {/* Toast container for notifications */}
+      <div style={{ display: "flex", gap: 40 }}>
+        <FamilyTree chartId="FamilyChart1" />
+        <FamilyTree chartId="FamilyChart2" />
+      </div>
       <ToastContainer position="top-right" autoClose={5000} />
     </>
   );
