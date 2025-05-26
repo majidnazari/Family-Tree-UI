@@ -1,4 +1,4 @@
-// FamilyTree.tsx
+// FamilyTree.jsx
 import React, { useEffect, useRef, useState } from "react";
 import f3 from "family-chart";
 import "family-chart/styles/family-chart.css";
@@ -6,7 +6,7 @@ import useFamilyTreeData from "../../hooks/useFamilyTreeData";
 import PersonDialog from "../personDialogComponent/PersonDialog";
 import SettingsDialog from "../settingDialogComponent/SettingsDialog";
 
-const FamilyTree = ({ personId }) => {
+const FamilyTree = ({ chartId, personId, onSelect }) => {
   const containerRef = useRef(null);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
@@ -37,6 +37,12 @@ const FamilyTree = ({ personId }) => {
   });
 
   const { treeData, loading } = useFamilyTreeData(settings.personId, settings.maxLevel);
+
+  useEffect(() => {
+    if (!settings.enableEditMode) {
+      setSelectedPerson(null);
+    }
+  }, [settings.enableEditMode]);
 
   useEffect(() => {
     if (loading || !containerRef.current || treeData.length === 0) return;
@@ -80,8 +86,49 @@ const FamilyTree = ({ personId }) => {
       f3Card.setCardDim(dimOptions);
     }
 
+    let f3EditTree = null;
+
+    // const handleCardClick = (e, d) => {
+    //   //const pId = d.data.id;
+    //   onSelect?.(d.id);
+
+    //   if (settings.enableEditMode) {
+    //     setSelectedPerson(d);
+
+    //     if (f3EditTree && !f3EditTree.isAddingRelative()) {
+    //       f3EditTree.open(d);
+    //     }
+    //   }
+
+    //   f3Card.onCardClickDefault(e, d);
+    // };
+
+    const handleCardClick = (e, d) => {
+      console.warn(" node selected:", d);
+
+      if (!d || !d.data) {
+        console.warn("Invalid node clicked:", d);
+        return;
+      }
+    
+      onSelect?.(d.data.data.id);
+    
+      if (settings.enableEditMode) {
+        setSelectedPerson(d);
+    
+        if (f3EditTree && !f3EditTree.isAddingRelative()) {
+          f3EditTree.open(d);
+        }
+      }
+    
+      f3Card.onCardClickDefault(e, d);
+    };
+    
+
+    f3Card.setOnCardClick(handleCardClick);
+
     if (settings.enableEditMode) {
-      const f3EditTree = f3Chart
+      f3EditTree = f3Chart
         .editTree()
         .fixed(true)
         .setFields([
@@ -91,22 +138,18 @@ const FamilyTree = ({ personId }) => {
         .setEditFirst(true);
 
       f3EditTree.setEdit();
+      //f3EditTree.open(f3Chart.getMainDatum());
 
-      f3Card.setOnCardClick((e, d) => {
-        setSelectedPerson(d);
-        f3EditTree.open(d);
-        if (f3EditTree.isAddingRelative()) return;
-        f3Card.onCardClickDefault(e, d);
-      });
+      const mainDatum = f3Chart.getMainDatum();
+      if (mainDatum && mainDatum.data) {
+        f3EditTree.open(mainDatum);
+      } else {
+        console.warn("getMainDatum returned invalid data:", mainDatum);
+      }
 
-      f3Chart.updateTree({ initial: true });
-      f3EditTree.open(f3Chart.getMainDatum());
-    } else {
-      f3Card.setOnCardClick((e, d) => {
-        f3Card.onCardClickDefault(e, d);
-      });
-      f3Chart.updateTree({ initial: true });
     }
+
+    f3Chart.updateTree({ initial: true });
   }, [treeData, loading, settings]);
 
   return (
@@ -115,12 +158,14 @@ const FamilyTree = ({ personId }) => {
         <button onClick={() => setShowSettings(true)}>⚙️ Settings</button>
       </div>
 
-      <div className="f3 f3-cont" id="FamilyChart" ref={containerRef}></div>
+      <div className="f3 f3-cont" id={chartId} ref={containerRef}></div>
 
-      <PersonDialog
-        personData={selectedPerson}
-        onClose={() => setSelectedPerson(null)}
-      />
+      {settings.enableEditMode && selectedPerson && (
+        <PersonDialog
+          personData={selectedPerson}
+          onClose={() => setSelectedPerson(null)}
+        />
+      )}
 
       <SettingsDialog
         open={showSettings}
