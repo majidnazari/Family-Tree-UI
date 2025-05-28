@@ -43,7 +43,21 @@ const SettingsDialog = ({ open, onClose, settings, onChange }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <div style={{ padding: "20px", display: "flex", flexWrap: "wrap", gap: "40px" }}>
+      <div style={{ position: "relative", padding: "20px", display: "flex", flexWrap: "wrap", gap: "40px" }}>
+        <button
+          onClick={onClose}
+          style={{
+            position: "absolute",
+            top: 10,
+            right: 10,
+            background: "",
+            border: "none",
+            cursor: "pointer"
+          }}
+          aria-label="Close"
+        >
+          <FiX size={24} />
+        </button>
         {/* Left Column */}
         <div style={{ flex: 1, minWidth: "300px" }}>
           <h2>Chart Settings</h2>

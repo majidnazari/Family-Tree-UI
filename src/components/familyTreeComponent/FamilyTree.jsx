@@ -6,7 +6,7 @@ import useFamilyTreeData from "../../hooks/useFamilyTreeData";
 import PersonDialog from "../personDialogComponent/PersonDialog";
 import SettingsDialog from "../settingDialogComponent/SettingsDialog";
 
-const FamilyTree = ({ chartId, personId, onSelect }) => {
+const FamilyTree = ({ chartId, personId, onSelect, treeType = "left" }) => {
   const containerRef = useRef(null);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
@@ -43,6 +43,8 @@ const FamilyTree = ({ chartId, personId, onSelect }) => {
       setSelectedPerson(null);
     }
   }, [settings.enableEditMode]);
+
+  
 
   useEffect(() => {
     if (loading || !containerRef.current || treeData.length === 0) return;
@@ -110,20 +112,26 @@ const FamilyTree = ({ chartId, personId, onSelect }) => {
         console.warn("Invalid node clicked:", d);
         return;
       }
-    
-      onSelect?.(d.data.data.id);
-    
+
+      const person = d.data?.data;
+      if (!person || !person.id) {
+        console.warn("Invalid person object");
+        return;
+      }
+
+      onSelect?.(person); // pass full person object
+
       if (settings.enableEditMode) {
         setSelectedPerson(d);
-    
+
         if (f3EditTree && !f3EditTree.isAddingRelative()) {
           f3EditTree.open(d);
         }
       }
-    
+
       f3Card.onCardClickDefault(e, d);
     };
-    
+
 
     f3Card.setOnCardClick(handleCardClick);
 
