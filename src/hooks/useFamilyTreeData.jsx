@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 
 //  Change this to however many levels you want
-const REPEAT_COUNT = 2;
+//const REPEAT_COUNT = 2;
 
 const generatePersonMarriageFragment = (depth) => {
   if (depth === 0) return '';
@@ -47,7 +47,7 @@ const generatePersonMarriageFragment = (depth) => {
     `;
 };
 
-const useFamilyTreeData = (personId) => {
+const useFamilyTreeData = (personId, maxLevel=2 ) => {
   const [treeData, setTreeData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -67,11 +67,13 @@ const useFamilyTreeData = (personId) => {
                             death_date
                             is_owner
                             status
-                            ${generatePersonMarriageFragment(REPEAT_COUNT)}
+                            ${generatePersonMarriageFragment(maxLevel)}
                         }
                     }
                 `;
-
+{
+ // console.log("the final query is :" , query)
+}
         const response = await fetch("http://localhost:8000/graphql", {
           method: "POST",
           headers: {
@@ -100,7 +102,7 @@ const useFamilyTreeData = (personId) => {
     };
 
     fetchFamilyTree();
-  }, [personId]);
+  }, [personId,maxLevel]);
 
   return { treeData, loading };
 };
