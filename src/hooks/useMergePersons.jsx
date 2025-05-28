@@ -64,7 +64,7 @@ const useMergePersons = () => {
       }
     }
 
-    toast.success("All pairs merged successfully!");
+    toast.success("All pairs merged successfully!"); 
   };
 
   return { mergePersons };
