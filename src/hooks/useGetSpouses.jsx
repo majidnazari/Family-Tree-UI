@@ -1,5 +1,5 @@
 import { gql, useApolloClient } from "@apollo/client";
-import { getAuthToken } from "../auth/authToken";
+import { getAuthToken } from "../utils/authToken";
 import { toast } from "react-toastify";
 
 const GET_PERSON_SPOUSES = gql`

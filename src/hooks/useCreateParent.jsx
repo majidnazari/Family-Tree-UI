@@ -1,5 +1,5 @@
 // src/hooks/useCreateParent.js
-import { getAuthToken } from "../auth/authToken";
+import { getAuthToken } from "../utils/authToken";
 import { toast } from "react-toastify";
 
 const useCreateParent = () => {
