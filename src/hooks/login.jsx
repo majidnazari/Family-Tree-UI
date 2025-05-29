@@ -1,3 +1,4 @@
+import config from "../config";
 import { toast } from "react-toastify";
 import { setAuthToken } from "../utils/authToken"; // adjust path if needed
 
@@ -12,7 +13,7 @@ const useLogin = () => {
     `;
 
     try {
-      const response = await fetch("http://localhost:8000/graphql", {
+      const response = await fetch(config.GRAPHQL_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

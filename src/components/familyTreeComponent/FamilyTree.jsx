@@ -30,7 +30,7 @@ const FamilyTree = ({ chartId, personId, onSelect, treeType = "left" }) => {
     imageX: "",
     imageY: "",
     cardDisplayLines: [
-      "first_name,last_name,avatar,birth_date,death_date",
+      "first_name,last_name",
       "status",
       ""
     ],
@@ -145,7 +145,8 @@ const FamilyTree = ({ chartId, personId, onSelect, treeType = "left" }) => {
         ])
         .setEditFirst(true);
 
-      f3EditTree.setEdit();
+      //f3EditTree.setEdit();
+      f3EditTree.setNoEdit();
       //f3EditTree.open(f3Chart.getMainDatum());
 
       const mainDatum = f3Chart.getMainDatum();

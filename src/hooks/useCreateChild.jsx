@@ -1,4 +1,5 @@
 import { getAuthToken } from "../utils/authToken";
+import config from "../config";
 
 
 import { toast } from "react-toastify";
@@ -42,7 +43,7 @@ const useCreateChild = () => {
     console.log("GraphQL CreateChild Mutation:\n", query);
 
     try {
-      const response = await fetch("http://localhost:8000/graphql", {
+      const response = await fetch(config.GRAPHQL_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

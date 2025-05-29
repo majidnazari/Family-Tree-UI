@@ -1,6 +1,7 @@
 // src/hooks/useCreateParent.js
 import { getAuthToken } from "../utils/authToken";
 import { toast } from "react-toastify";
+import config from "../config";
 
 const useCreateParent = () => {
   const createParent = async (input) => {
@@ -46,7 +47,7 @@ const useCreateParent = () => {
     `;
 
     try {
-      const response = await fetch("http://localhost:8000/graphql", {
+      const response = await fetch(config.GRAPHQL_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
