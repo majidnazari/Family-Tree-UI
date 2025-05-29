@@ -3,8 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import f3 from "family-chart";
 import "family-chart/styles/family-chart.css";
 import useFamilyTreeData from "../../hooks/useFamilyTreeData";
-import PersonDialog from "../personDialogComponent/PersonDialog";
-import SettingsDialog from "../settingDialogComponent/SettingsDialog";
+import PersonDialog from "../personDialog/PersonDialog";
+import SettingsDialog from "../settingDialog/SettingsDialog";
 
 const FamilyTree = ({ chartId, personId, onSelect, treeType = "left" }) => {
   const containerRef = useRef(null);
