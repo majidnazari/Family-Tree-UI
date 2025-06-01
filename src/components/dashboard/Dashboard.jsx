@@ -8,7 +8,7 @@ import UsersView from '../users/UsersView'; // Adjust the path as needed
 
 
 function Dashboard() {
-    const [mode, setMode] = useState('normal');
+    const [mode, setMode] = useState(null);
     const [menuOpen, setMenuOpen] = useState({ tree: true, users: false, reports: false });
 
 
@@ -27,7 +27,8 @@ function Dashboard() {
             case 'merge': return <MergeManager />;
             case 'users': return <UsersView />;
             case 'report1': return <div style={styles.pagePlaceholder}>📊 Report 1 Page</div>;
-            default: return <div style={styles.pagePlaceholder}>Select a page</div>;
+            default:
+                return <div style={styles.pagePlaceholder}> Please select a page from the sidebar</div>;
         }
     };
 
