@@ -4,8 +4,17 @@ import paginationConfig from '../../config/paginationConfig';
 import UserSearchForm from './UserSearchForm';
 import UserTable from './UserTable';
 import Pagination from './Pagination';
+import UpdateUserDialog from './UpdateUserDialog'; // ✅ New Import
 
 const UsersView = () => {
+    const [selectedUserId, setSelectedUserId] = useState(null);
+    const [dialogOpen, setDialogOpen] = useState(false);
+
+    const handleUpdateUser = (user) => {
+        setSelectedUserId(user.id);
+        setDialogOpen(true);
+    };
+
     const [inputs, setInputs] = useState({
         status: '',
         country_code: '',
@@ -27,21 +36,6 @@ const UsersView = () => {
 
     const { users, paginator, loading } = useAllUsers(filters);
 
-    const handleViewTree = (user) => {
-        console.log('Viewing tree for user:', user);
-        // Navigate or show modal
-    };
-
-    const handleUpdateUser = (user) => {
-        console.log('Updating user:', user);
-        // Open update form or navigate to update page
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setInputs((prev) => ({ ...prev, [name]: value }));
-    };
-
     const handleSearch = () => {
         setFilters({
             status: inputs.status,
@@ -61,15 +55,19 @@ const UsersView = () => {
 
     return (
         <div style={styles.container}>
-            <h2 style={styles.title}>👤  Users</h2>
-            <UserSearchForm inputs={inputs} onChange={handleInputChange} onSearch={handleSearch} />
-            <UserTable
-                users={users}
-                loading={loading}
-                onViewTree={handleViewTree}
-                onUpdateUser={handleUpdateUser}
-            />
+            <h2 style={styles.title}>👤 Users</h2>
+            <UserSearchForm inputs={inputs} onChange={(e) => setInputs(prev => ({ ...prev, [e.target.name]: e.target.value }))} onSearch={handleSearch} />
+            <UserTable users={users} loading={loading} onUpdateUser={handleUpdateUser} />
             <Pagination page={filters.page} paginator={paginator} goToPage={goToPage} />
+
+            {/* Update Dialog */}
+            {dialogOpen && (
+                <UpdateUserDialog
+                    userId={selectedUserId}
+                    open={dialogOpen}
+                    onClose={() => setDialogOpen(false)}
+                />
+            )}
         </div>
     );
 };

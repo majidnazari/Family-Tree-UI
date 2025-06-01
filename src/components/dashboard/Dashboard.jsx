@@ -5,6 +5,7 @@ import { LogOut, Bell } from 'lucide-react';
 import { toast } from "react-toastify";
 import { clearAuthToken } from '../../utils/authToken';
 import UsersView from '../users/UsersView'; // Adjust the path as needed
+import { useNavigate } from 'react-router-dom';
 
 
 function Dashboard() {
