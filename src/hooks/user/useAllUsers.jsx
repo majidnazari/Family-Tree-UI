@@ -16,8 +16,8 @@ const useAllUsers = (filters = {}) => {
 
       // Build query params
       const {
-        page =paginationConfig.DEFAULT_FIRST ,
-        first= paginationConfig.DEFAULT_PAGE,
+        page = paginationConfig.DEFAULT_FIRST,
+        first = paginationConfig.DEFAULT_PAGE,
         orderBy = { column: "id", order: "ASC" },
         mobile,
         country_code,
@@ -49,6 +49,13 @@ const useAllUsers = (filters = {}) => {
               updated_at
               created_at
               country_code
+              OwnerPerson{
+                id
+                first_name
+                last_name
+                birth_date
+                
+              }
             }
             paginatorInfo {
               count
