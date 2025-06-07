@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import useLogin from '../hooks/login'; // adjust the import path if needed
+import { useNavigate } from 'react-router-dom';
 
 function Login({ onLoginSuccess }) {
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useLogin(); // using the proper login hook
+
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     if (!mobile.trim() || !password.trim()) {
@@ -18,6 +21,7 @@ function Login({ onLoginSuccess }) {
     try {
       await login(mobile, password); // pass mobile/password to the query
       onLoginSuccess(); // go to dashboard or whatever you want
+      navigate('/');
     } catch (err) {
       // error is already handled by the hook (toast etc.)
     } finally {
@@ -71,7 +75,7 @@ const styles = {
     padding: '20px',
     margin: 0,
   },
-  
+
   card: {
     width: '420px',
     backgroundColor: '#fff',

@@ -7,6 +7,10 @@ import { clearAuthToken } from '../../utils/authToken';
 import UsersView from '../users/UsersView'; // Adjust the path as needed
 import { useNavigate } from 'react-router-dom';
 
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+const MySwal = withReactContent(Swal);
+
 
 function Dashboard() {
     const [mode, setMode] = useState(null);
@@ -14,12 +18,26 @@ function Dashboard() {
 
 
     const handleLogout = () => {
-        if (window.confirm("Are you sure you want to logout?")) {
-            localStorage.removeItem('auth_token');
-            clearAuthToken();
-            toast.info('Logged out');
-            window.location.reload();
-        }
+        MySwal.fire({
+            title: 'Are you sure?',
+            text: "You will be logged out from your account.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#888',
+            confirmButtonText: 'Yes, logout!',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                popup: 'my-swal-popup',
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                localStorage.removeItem('auth_token');
+                clearAuthToken();
+                toast.info('Logged out');
+                window.location.reload();
+            }
+        });
     };
 
     const renderContent = () => {
