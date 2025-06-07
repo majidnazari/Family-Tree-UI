@@ -3,8 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import f3 from "family-chart";
 import "family-chart/styles/family-chart.css";
 import useFamilyTreeData from "../../hooks/useFamilyTreeData";
-import PersonDialog from "../personDialogComponent/PersonDialog";
-import SettingsDialog from "../settingDialogComponent/SettingsDialog";
+import PersonDialog from "../personDialog/PersonDialog";
+import SettingsDialog from "../settingDialog/SettingsDialog";
 
 const FamilyTree = ({ chartId, personId, onSelect, treeType = "left" }) => {
   const containerRef = useRef(null);
@@ -30,7 +30,7 @@ const FamilyTree = ({ chartId, personId, onSelect, treeType = "left" }) => {
     imageX: "",
     imageY: "",
     cardDisplayLines: [
-      "first_name,last_name,avatar,birth_date,death_date",
+      "first_name,last_name",
       "status",
       ""
     ],
@@ -145,7 +145,8 @@ const FamilyTree = ({ chartId, personId, onSelect, treeType = "left" }) => {
         ])
         .setEditFirst(true);
 
-      f3EditTree.setEdit();
+      //f3EditTree.setEdit();
+      f3EditTree.setNoEdit();
       //f3EditTree.open(f3Chart.getMainDatum());
 
       const mainDatum = f3Chart.getMainDatum();

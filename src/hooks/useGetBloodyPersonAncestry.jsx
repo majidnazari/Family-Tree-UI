@@ -1,5 +1,6 @@
-import { getAuthToken } from "../auth/authToken";
+import { getAuthToken } from "../utils/authToken";
 import { toast } from "react-toastify";
+import config from "../config";
 
 const useGetBloodyPersonAncestry = () => {
   const fetchAncestry = async (depth = 10) => {
@@ -18,7 +19,7 @@ const useGetBloodyPersonAncestry = () => {
     `;
 
     try {
-      const response = await fetch("http://localhost:8000/graphql", {
+      const response = await fetch(config.GRAPHQL_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
