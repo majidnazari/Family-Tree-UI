@@ -36,10 +36,10 @@ const UserTable = ({ users, loading, onViewTree, onUpdateUser }) => {
                         <tr key={user.id}>
                             <td style={styles.idCell}>{user.id}</td>
                             <td style={styles.td}>{user.mobile}</td>
-                            <td style={styles.td}>{user.OwnerPerson.id}</td>
-                            <td style={styles.td}>{user.OwnerPerson.first_name}</td>
-                            <td style={styles.td}>{user.OwnerPerson.last_name}</td>
-                            <td style={styles.td}>{formatDate(user.OwnerPerson.birth_date)}</td>
+                            <td style={styles.td}>{user?.OwnerPerson?.id || ''}</td>
+                            <td style={styles.td}>{user?.OwnerPerson?.first_name || ''}</td>
+                            <td style={styles.td}>{user?.OwnerPerson?.last_name || ''}</td>
+                            <td style={styles.td}>{formatDate(user?.OwnerPerson?.birth_date)}</td>
                             <td style={styles.td}>{user.country_code}</td>
                             <td style={styles.td}>{user.role}</td>
                             <td style={styles.td}>{user.status}</td>
@@ -87,8 +87,8 @@ const styles = {
         width: '60px',          // Adjust width to your preference
         fontSize: '0.85rem',    // Slightly smaller text
         wordBreak: 'break-word',
-      },
-      
+    },
+
 };
 
 export default UserTable;

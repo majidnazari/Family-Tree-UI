@@ -29,6 +29,8 @@ const FamilyTree = ({ chartId, personId, onSelect, treeType = "left" }) => {
     imageHeight: "",
     imageX: "",
     imageY: "",
+    textX: 10,
+    textY: 100, // this moves the text *below* the image
     cardDisplayLines: [
       "first_name,last_name",
       "status",
@@ -44,7 +46,7 @@ const FamilyTree = ({ chartId, personId, onSelect, treeType = "left" }) => {
     }
   }, [settings.enableEditMode]);
 
-  
+
 
   useEffect(() => {
     if (loading || !containerRef.current || treeData.length === 0) return;
@@ -83,10 +85,15 @@ const FamilyTree = ({ chartId, personId, onSelect, treeType = "left" }) => {
     if (settings.imageHeight) dimOptions.img_height = +settings.imageHeight;
     if (settings.imageX) dimOptions.img_x = +settings.imageX;
     if (settings.imageY) dimOptions.img_y = +settings.imageY;
+    if (settings.textX) dimOptions.text_x = +settings.textX;
+    if (settings.textY) dimOptions.text_y = +settings.textY;
+
 
     if (Object.keys(dimOptions).length > 0) {
       f3Card.setCardDim(dimOptions);
     }
+
+
 
     let f3EditTree = null;
 
