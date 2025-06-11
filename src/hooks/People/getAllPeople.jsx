@@ -70,6 +70,16 @@ const useAllPeople = (filters = {}) => {
                       node_code
                       status
                       updated_at
+                      Creator {
+                        id
+                        mobile
+                        role
+                      }
+                      Editor {
+                        id
+                        mobile
+                        role
+                      }
                       Addresses {
                         id
                         person_id

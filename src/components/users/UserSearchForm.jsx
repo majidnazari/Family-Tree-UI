@@ -7,7 +7,7 @@ const orderEnum = ['ASC', 'DESC'];
 
 const UserSearchForm = ({ inputs, onChange, onSearch }) => {
     return (
-        <div style={styles.form}>
+        <div style={styles.form} dir="rtl">
             <input name="mobile" placeholder="Mobile" value={inputs.mobile} onChange={onChange} style={styles.input} />
             <input name="country_code" placeholder="Country Code" value={inputs.country_code} onChange={onChange} style={styles.input} />
             <select name="status" value={inputs.status} onChange={onChange} style={styles.input}>
