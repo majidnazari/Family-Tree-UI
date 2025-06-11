@@ -1,13 +1,8 @@
 import React from "react";
 import { Dialog, Input, InputLabel, Box } from "@mui/material";
 import { FiPlus, FiX } from "react-icons/fi";
-import useAncestryHeads from "../../hooks/user/useAncestryHeads";
 
-
-const SettingsDialog = ({ open, onClose, settings, onChange }) => {
-
-  const { heads, loading } = useAncestryHeads(10);
-
+const SettingsDialog_old = ({ open, onClose, settings, onChange }) => {
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     const parsedValue =
@@ -67,35 +62,17 @@ const SettingsDialog = ({ open, onClose, settings, onChange }) => {
         <div style={{ flex: 1, minWidth: "300px" }}>
           <h2>Chart Settings</h2>
 
-          {/* Root Person ID with optional dropdown */}
+          {/* Root Person ID */}
           <label>Root Person ID:</label>
-          {loading ? (
-            <p>Loading heads...</p>
-          ) : (
-            <select
-              name="personId"
-              value={settings.personId?.toString() || ""}
-              onChange={(e) => onChange({ ...settings, personId: e.target.value })}
-              style={{ width: "100%", marginBottom: "10px" }}
-            >
-              <option value="">-- Select Root Person --</option>
-              {heads.map((head) => (
-                <option key={head.person_id} value={head.person_id.toString()}>
-                  {head.full_name || `${head.first_name} ${head.last_name || ""}`}
-                </option>
-              ))}
-            </select>
-          )}
-          {/* Manual override option */}
           <input
             type="text"
             name="personId"
-            placeholder="Or enter ID manually"
-            value={settings.personId?.toString() || ""}
-            onChange={(e) => onChange({ ...settings, personId: e.target.value })}
-            style={{ width: "100%", marginTop: "5px" }}
+            defaultValue={settings.personId}
+            onBlur={(e) => {
+              const value = e.target.value;
+              onChange({ ...settings, personId: value });
+            }}
           />
-
           <br /><br />
 
           {/* Repeat Count (compact input) */}
@@ -366,4 +343,4 @@ const SettingsDialog = ({ open, onClose, settings, onChange }) => {
   );
 };
 
-export default SettingsDialog;
+export default SettingsDialog_old;

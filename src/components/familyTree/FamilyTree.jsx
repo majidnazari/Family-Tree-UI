@@ -29,8 +29,6 @@ const FamilyTree = ({ chartId, personId, onSelect, treeType = "left" }) => {
     imageHeight: "",
     imageX: "",
     imageY: "",
-    textX: 10,
-    textY: 100, // this moves the text *below* the image
     cardDisplayLines: [
       "first_name,last_name",
       "status",
