@@ -5,6 +5,7 @@ import { LogOut, Bell } from 'lucide-react';
 import { toast } from "react-toastify";
 import { clearAuthToken } from '../../utils/authToken';
 import UsersView from '../users/UsersView'; // Adjust the path as needed
+import PeopleView from '../People/PeopleView'; // Adjust the path as needed
 import { useNavigate } from 'react-router-dom';
 
 import Swal from 'sweetalert2';
@@ -14,7 +15,7 @@ const MySwal = withReactContent(Swal);
 
 function Dashboard() {
     const [mode, setMode] = useState(null);
-    const [menuOpen, setMenuOpen] = useState({ tree: true, users: false, reports: false });
+    const [menuOpen, setMenuOpen] = useState({ tree: true, users: false, people: false, reports: false });
 
 
     const handleLogout = () => {
@@ -45,6 +46,8 @@ function Dashboard() {
             case 'normal': return <FamilyTreeOnlyView />;
             case 'merge': return <MergeManager />;
             case 'users': return <UsersView />;
+            case 'people': return <PeopleView />;
+
             case 'report1': return <div style={styles.pagePlaceholder}>📊 Report 1 Page</div>;
             default:
                 return <div style={styles.pagePlaceholder}> Please select a page from the sidebar</div>;
@@ -103,6 +106,17 @@ function Dashboard() {
                             )}
                         </div>
 
+                        {/* People Section */}
+                        <div>
+                            <div style={styles.accordionHeader} onClick={() => toggleMenu('people')}>
+                                👥 People
+                            </div>
+                            {menuOpen.people && (
+                                <div style={styles.subMenu}>
+                                    <div onClick={() => setMode('people')} style={styles.subMenuItem}>View People</div>
+                                </div>
+                            )}
+                        </div>
 
                         {/* Reports Section */}
                         <div>
