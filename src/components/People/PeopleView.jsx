@@ -20,6 +20,7 @@ const PeopleView = () => {
         setDialogOpen(false);
     };
 
+    // ✅ Add user_id to inputs state
     const [inputs, setInputs] = useState({
         status: '',
         country_code: '',
@@ -30,6 +31,7 @@ const PeopleView = () => {
         last_name: '',
         gender: '',
         is_owner: '',
+        creator_id: '',  // <-- added
         column: 'id',
         order: 'ASC',
     });
@@ -44,11 +46,11 @@ const PeopleView = () => {
         last_name: '',
         gender: '',
         is_owner: '',
+        creator_id: '',  // <-- added
         orderBy: { column: 'id', order: 'ASC' },
         page: paginationConfig.DEFAULT_PAGE,
         first: paginationConfig.DEFAULT_FIRST,
     });
-
 
     const handleSearch = () => {
         setFilters({
@@ -69,7 +71,17 @@ const PeopleView = () => {
     return (
         <div style={styles.container}>
             <h2 style={styles.title}>👥 People</h2>
-            <PeopleSearchForm inputs={inputs} onChange={(e) => setInputs(prev => ({ ...prev, [e.target.name]: e.target.value }))} onSearch={handleSearch} />
+
+            <PeopleSearchForm
+                inputs={inputs}
+                onChange={(e) => setInputs(prev => ({ ...prev, [e.target.name]: e.target.value }))}
+                onSearch={handleSearch}
+                onUserSelect={(selected) => {
+                    setInputs(prev => ({ ...prev, creator_id: selected ? selected.value : '' }));
+                }}
+            />
+
+
             <PeopleTable people={people} loading={loading} onUpdatePerson={handleUpdatePerson} />
             <Pagination page={filters.page} paginator={paginator} goToPage={goToPage} />
 
